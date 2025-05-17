@@ -1,0 +1,179 @@
+:root {
+  --bg-dark: #2B1B4E;
+  --panel-bg: #3F2A5D;
+  --bot-bubble: rgb(115, 44, 3);
+  --user-bubble: #8a4501;
+  --text-color: #FFFFFF;
+  --drop-zone-bg: rgba(255,255,255,0.1);
+  --drop-zone-border: rgba(255,255,255,0.3);
+  --info-bg: rgba(0, 0, 0, 0.5);
+  --result-box-bg: #873d01; /* Fondo de las cajas de resultado */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: var(--text-color);
+  background: url("../images/Captivating Pixel Art Scenes.gif") center/cover no-repeat;
+  height: 100vh;
+  display: flex;
+  position: relative;
+}
+
+.info-box {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: var(--info-bg);
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 10px;
+  z-index: 1000;
+}
+.info-box p {
+  line-height: 1.5;
+}
+
+.center-container {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  height: 85vh;
+  margin: auto;
+  background: rgba(0,0,0,0.5);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* IZQUIERDA */
+.left-panel {
+  width: 25%;
+  padding: 20px;
+}
+.drop-zone {
+  border: 1px dashed var(--drop-zone-border);
+  background: var(--drop-zone-bg);
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: background .3s, border-color .3s;
+}
+.drop-zone.hover {
+  background: rgba(255,255,255,0.2);
+  border-color: #fff;
+}
+.drop-zone.has-image > p {
+  display: none;
+}
+.img-preview {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.img-preview img {
+  max-width: 100%; max-height: 100%; object-fit: contain;
+  border-radius: 10px;
+}
+
+/* CENTRO: grid de resultados */
+.main-result-layout {
+  width: 50%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: auto;    /* filas ajustan altura al contenido */
+  gap: 10px;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* CAJAS DINÁMICAS y texto centrado */
+.result-box-multi {
+  background-color: var(--result-box-bg);
+  color: white;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;     /* centra horizontalmente el contenido */
+  text-align: center;      /* centra el texto */
+  justify-content: flex-start; /* empuja contenido hacia arriba si hay espacio */
+}
+
+/* Ajustes tipográficos */
+.result-box-multi h4 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+.result-box-multi p {
+  margin-bottom: 8px;
+}
+.result-box-multi ul {
+  list-style: none;
+  padding: 0;
+}
+.result-box-multi ul li {
+  margin: 4px 0;
+}
+
+/* 1) Ajustes en la columna derecha */
+.right-panel {
+  width: 25%;
+  padding: 20px;
+  display: flex;            /* añade */
+  align-items: center;      /* centra verticalmente */
+  justify-content: center;  /* centra horizontalmente la caja */
+  overflow-y: auto;
+}
+
+#storyBox {
+  background-color: var(--result-box-bg);
+  color: white;
+  border-radius: 10px;
+  padding: 15px;            /* un poco más de espacio */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  text-align: center;
+  font-size: 1.2rem;          /* letra más grande */
+  max-width: 100%;
+}
+
+/* 2) Ajuste de filas en el grid de resultados */
+.main-result-layout {
+  /* lo que ya tenías: */
+  width: 50%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: min-content;
+  gap: 10px;
+  padding: 20px;
+  overflow-y: auto;
+  /* nuevo: centrar verticalmente */
+  margin: auto 0;
+}
+
+/* 3) Reducir padding vertical en result-box para que no queden tan altas */
+.result-box-multi {
+  padding: 8px 5px;        /* menos padding vertical */
+  /* ... */
+}
+/* Oculta el input de archivo */
+input[type="file"] {
+  display: none;
+}

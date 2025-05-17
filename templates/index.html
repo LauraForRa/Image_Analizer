@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clasificador de Imágenes</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <div class="info-box">
+    <p>©️Laura Fornós</p>
+    <p>   Robert Lopez</p>
+    <p>laurafornosramirez@gmail.com</p>
+    <p>robertrlm16@gmail.com</p>
+  </div>
+
+  <div class="center-container">
+    <!-- IZQUIERDA: drop-zone -->
+    <div class="left-panel">
+      <div class="drop-zone" id="dropZone">
+        <p>Arrastra y suelta una imagen aquí o haz clic para seleccionar</p>
+        <div class="img-preview" id="imgPreview"></div>
+      </div>
+      <form id="imageForm" enctype="multipart/form-data">
+        <input type="file" id="imageInput" accept="image/*">
+      </form>
+    </div>
+
+    <!-- CENTRO: resultados en grid 3×2 -->
+    <div class="main-result-layout" id="resultsContainer">
+      <!-- aquí insertas las .result-box-multi -->
+    </div>
+
+    <!-- DERECHA: historia -->
+    <div class="right-panel">
+      <div class="result-box-multi" id="storyBox">La historia aparecerá aquí.</div>
+    </div>
+  </div>
+
+  <script>
+    const dropZone        = document.getElementById('dropZone');
+    const imageInput      = document.getElementById('imageInput');
+    const imgPreview      = document.getElementById('imgPreview');
+    const resultsContainer= document.getElementById('resultsContainer');
+    const storyBox        = document.getElementById('storyBox');
+
+    function showImagePreview(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        imgPreview.innerHTML = `<img src="${e.target.result}" alt="Imagen subida">`;
+        dropZone.classList.add('has-image');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateResults(data) {
+      resultsContainer.innerHTML = '';
+      Object.entries(data.resultados).forEach(([modelo, info]) => {
+        const box = document.createElement('div');
+        box.className = 'result-box-multi';
+        box.innerHTML = `
+          <h4>${modelo.toUpperCase()}</h4>
+          <p><strong>${info.prediccion}</strong></p>
+          <ul>
+            ${Object.entries(info.porcentajes)
+              .map(([clase,pct])=>`<li>${clase}: ${pct}%</li>`).join('')}
+          </ul>`;
+        resultsContainer.appendChild(box);
+      });
+      storyBox.innerText = data.historia;
+    }
+
+    async function classifyImage(file) {
+      storyBox.innerText = 'Generando historia…';
+      resultsContainer.innerHTML = '';
+      const formData = new FormData();
+      formData.append('imagen', file);
+      try {
+        const res = await fetch('http://192.168.66.161:5000/predict',{ method: 'POST', body: formData });
+        const data = await res.json();
+        if(data.error){ storyBox.innerText = data.error; return; }
+        updateResults(data);
+      } catch {
+        storyBox.innerText = 'Error al conectar con la API.';
+      }
+    }
+
+    dropZone.addEventListener('click', ()=>imageInput.click());
+    dropZone.addEventListener('dragover',e=>{ e.preventDefault(); dropZone.classList.add('hover'); });
+    dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('hover'));
+    dropZone.addEventListener('drop',e=>{
+      e.preventDefault(); dropZone.classList.remove('hover');
+      const file = e.dataTransfer.files[0];
+      if(file){ showImagePreview(file); classifyImage(file); }
+    });
+    imageInput.addEventListener('change', e=>{
+      const file = e.target.files[0];
+      if(file){ showImagePreview(file); classifyImage(file); }
+    });
+  </script>
+</body>
+</html>
