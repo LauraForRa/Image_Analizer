@@ -1,2 +1,8 @@
-You have to put in 'entrenamiento' in the folder 'data_x' your images preprocessed
-You have to create a folder called 'modelos', here will be saved ypur classifiers. 
+Place your preprocessed training images inside the folder:
+data_x/entrenamiento
+
+Create a folder named:
+modelos
+This is where your trained classifiers will be saved.
+
+
